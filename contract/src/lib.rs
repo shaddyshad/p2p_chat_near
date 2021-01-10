@@ -20,96 +20,145 @@ use std::collections::HashMap;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
-// Structs in Rust are similar to other languages, and may include impl keyword as shown below
-// Note: the names of the structs are not important when calling the smart contract, but the function names are
-#[near_bindgen]
+// a thread where messages can be sent to 
 #[derive(Default, BorshDeserialize, BorshSerialize)]
-pub struct Welcome {
-    records: HashMap<String, String>,
+pub struct Thread {
+    pub messages: HashMap<String, String>,
+    pub members: Vec<String>,
+    pub topic: String
 }
 
+impl Thread {
+    pub fn insert(&mut self, key: String, value: String) {
+        self.messages.insert(key, value);
+    }
+
+    // add a member 
+    pub fn add_member(&mut self, member: String){
+        self.members.push(member)
+    }
+}
+
+
 #[near_bindgen]
-impl Welcome {
-    pub fn set_greeting(&mut self, message: String) {
+#[derive(Default, BorshSerialize, BorshDeserialize)]
+pub struct Messages {
+    threads: Vec<Thread>
+}
+
+static MAX_MSG_LENGTH: usize = 256;
+
+#[near_bindgen]
+impl Messages {
+    /// filter the threads that a member belongs to 
+    /// and return a list of all topics 
+    pub fn get_threads(&self, member: String) -> Vec<String> {
+        let threads: Vec<&Thread> = self.threads.iter()
+            .filter(|t| {
+                t.members.contains(&member)
+            })
+            .collect();
+
+        let topics: Vec<String> = threads.iter()
+            .map(|t| t.topic.clone())
+            .collect();
+
+        topics 
+    }
+
+    // send a message to a thread 
+    pub fn send_message(&mut self, topic: String, message: String) -> Result<(), String>{
+        if message.is_empty() {
+            return Err("Message cannot be empty".into());
+        }
+
+        if message.len() > MAX_MSG_LENGTH{
+            return Err(format!(
+                "Message should not be more that {} characters",
+                MAX_MSG_LENGTH
+            ));
+        }
+
+        // choose a  thread to send it to 
+        let thread = self.threads.iter_mut()
+            .find(|t| t.topic == topic);
+
         let account_id = env::signer_account_id();
 
-        // Use env::log to record logs permanently to the blockchain!
-        env::log(format!("Saving greeting '{}' for account '{}'", message, account_id,).as_bytes());
-
-        self.records.insert(account_id, message);
-    }
-
-    // `match` is similar to `switch` in other languages; here we use it to default to "Hello" if
-    // self.records.get(&account_id) is not yet defined.
-    // Learn more: https://doc.rust-lang.org/book/ch06-02-match.html#matching-with-optiont
-    pub fn get_greeting(&self, account_id: String) -> &str {
-        match self.records.get(&account_id) {
-            Some(greeting) => greeting,
-            None => "Hello",
-        }
-    }
-}
-
-/*
- * The rest of this file holds the inline tests for the code above
- * Learn more about Rust tests: https://doc.rust-lang.org/book/ch11-01-writing-tests.html
- *
- * To run from contract directory:
- * cargo test -- --nocapture
- *
- * From project root, to run in combination with frontend tests:
- * yarn test
- *
- */
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use near_sdk::MockedBlockchain;
-    use near_sdk::{testing_env, VMContext};
-
-    // mock the context for testing, notice "signer_account_id" that was accessed above from env::
-    fn get_context(input: Vec<u8>, is_view: bool) -> VMContext {
-        VMContext {
-            current_account_id: "alice_near".to_string(),
-            signer_account_id: "bob_near".to_string(),
-            signer_account_pk: vec![0, 1, 2],
-            predecessor_account_id: "carol_near".to_string(),
-            input,
-            block_index: 0,
-            block_timestamp: 0,
-            account_balance: 0,
-            account_locked_balance: 0,
-            storage_usage: 0,
-            attached_deposit: 0,
-            prepaid_gas: 10u64.pow(18),
-            random_seed: vec![0, 1, 2],
-            is_view,
-            output_data_receivers: vec![],
-            epoch_height: 19,
+        if let Some(thread) = thread {
+            // check if user is a member 
+            if thread.members.contains(&account_id){
+                thread.insert(account_id, message);
+                Ok(())
+            }else{
+                return Err(format!(
+                    "Only members can send messages to {} thread",
+                    topic
+                ));
+            }
+        }else{
+            return Err("Thread does not exist".into());
         }
     }
 
-    #[test]
-    fn set_then_get_greeting() {
-        let context = get_context(vec![], false);
-        testing_env!(context);
-        let mut contract = Welcome::default();
-        contract.set_greeting("howdy".to_string());
-        assert_eq!(
-            "howdy".to_string(),
-            contract.get_greeting("bob_near".to_string())
-        );
+    // get messages from a specific thread 
+    pub fn get_messages(&self, topic: String) -> Result<Vec<(String, String)>, String>{
+        let thread = self.threads.iter()
+            .find(|t| t.topic == topic);
+
+        if let Some(thread) = thread {
+            let msgs: Vec<(String, String)> = thread.messages.iter()
+                .map(|(sender, msg)| (sender.clone(), msg.clone()))
+                .collect();
+
+            Ok(msgs)
+        }else{
+            return Err(format!(
+                "Thread {} not found",
+                topic
+            ))
+        }
     }
 
-    #[test]
-    fn get_default_greeting() {
-        let context = get_context(vec![], true);
-        testing_env!(context);
-        let contract = Welcome::default();
-        // this test did not call set_greeting so should return the default "Hello" greeting
-        assert_eq!(
-            "Hello".to_string(),
-            contract.get_greeting("francis.near".to_string())
-        );
+    // create a new thread 
+    pub fn new_thread(&mut self, topic: String) -> Result<(), String>{
+        let thread = self.threads.iter()
+            .find(|t| t.topic == topic);
+
+        if let Some(_) = thread {
+            return Err(format!(
+                "A thread with {} name exists",
+                topic
+            ));
+        }
+
+        let account_id = env::signer_account_id();
+
+        let new_thread = Thread {
+            messages: HashMap::new(),
+            members: vec![account_id],
+            topic
+        };
+
+        self.threads.push(new_thread);
+
+        Ok(())
+
+    }
+
+    // invite an account to a thread 
+    pub fn invite(&mut self, topic: String, account_id: String) -> Result<(), String>{
+        let thread = self.threads.iter_mut()
+            .find(|t| t.topic == topic);
+
+        if let Some(t) = thread{
+            t.add_member(account_id);
+            Ok(())
+        }else{
+            return Err(format!(
+                "Thread {} does not exist",
+                topic
+            ))
+        }
     }
 }
