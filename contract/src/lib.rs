@@ -1,37 +1,49 @@
-/*
- * This is an example of a Rust smart contract with two simple, symmetric functions:
- *
- * 1. set_greeting: accepts a greeting, such as "howdy", and records it for the user (account_id)
- *    who sent the request
- * 2. get_greeting: accepts an account_id and returns the greeting saved for it, defaulting to
- *    "Hello"
- *
- * Learn more about writing NEAR smart contracts with Rust:
- * https://github.com/near/near-sdk-rs
- *
- */
-
 use env::log;
 // To conserve gas, efficient serialization is achieved through Borsh (http://borsh.io/)
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::wee_alloc;
 use near_sdk::{env, near_bindgen};
-use std::collections::HashMap;
+use std::time::SystemTime;
+use chrono::offset::Local;
+use chrono::DateTime;
+
 
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
+
+// message type 
+#[derive(Default,BorshDeserialize, BorshSerialize, Clone)]
+pub struct Message {
+    pub message: String,
+    pub sender: String,
+    pub ts: String
+}
+
+impl Message {
+    pub fn new(message: String, sender: String) -> Self {
+        let now = SystemTime::now();
+        let datetime: DateTime<Local> = now.into();
+        let ts: String = format!("{}", datetime.format("%d/%m/%Y %T"));
+        
+        Self {
+            message,
+            sender,
+            ts
+        }
+    }
+}
 // a thread where messages can be sent to 
 #[derive(Default, BorshDeserialize, BorshSerialize)]
 pub struct Thread {
-    pub messages: HashMap<String, String>,
+    pub messages: Vec<Message>,
     pub members: Vec<String>,
     pub topic: String
 }
 
 impl Thread {
-    pub fn insert(&mut self, key: String, value: String) {
-        self.messages.insert(key, value);
+    pub fn insert(&mut self, msg: Message) {
+        self.messages.push(msg);
     }
 
     // add a member 
@@ -39,6 +51,8 @@ impl Thread {
         self.members.push(member)
     }
 }
+
+
 
 
 #[near_bindgen]
@@ -75,7 +89,7 @@ impl Messages {
 
         if let Some(thread) = thread {
             log(b"thread found");
-            
+
             return thread.members.clone();
         }
         
@@ -104,7 +118,9 @@ impl Messages {
         if let Some(thread) = thread {
             // check if user is a member 
             if thread.members.contains(&account_id){
-                thread.insert(account_id, message);
+                let new_message = Message::new(message, account_id);
+
+                thread.insert(new_message);
                 Ok(())
             }else{
                 return Err(format!(
@@ -123,11 +139,7 @@ impl Messages {
             .find(|t| t.topic == topic);
 
         if let Some(thread) = thread {
-            let msgs: Vec<(String, String)> = thread.messages.iter()
-                .map(|(sender, msg)| (sender.clone(), msg.clone()))
-                .collect();
-
-            Ok(msgs)
+            Ok(thread.messages.clone())
         }else{
             return Err(format!(
                 "Thread {} not found",
@@ -151,7 +163,7 @@ impl Messages {
         let account_id = env::signer_account_id();
 
         let new_thread = Thread {
-            messages: HashMap::new(),
+            messages: vec![],
             members: vec![account_id],
             topic
         };
