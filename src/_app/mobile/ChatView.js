@@ -12,7 +12,7 @@ import {
 
 // icons 
 import {LeftOutlined, PlusOutlined, SendOutlined} from '@ant-design/icons'
-import {Input, Button as AntButton, Comment} from 'antd'
+import {Input, Button as AntButton, Comment, Divider} from 'antd'
 import moment from 'moment'
 
 
@@ -36,6 +36,8 @@ const ChatView = ({threadName, selectThread}) => {
     const [message, setMessage] = useState("")
     const [messages, setMessages] = useState([])
     const [sent,setSent] = useState(0)
+    const [reload, setReload] = useState(0);
+    const [members, setMembers] = useState([])
 
     const sendMessage = () => {
         let ts = moment().format()
@@ -60,6 +62,18 @@ const ChatView = ({threadName, selectThread}) => {
         }
     }, [threadName, sent])
 
+    useEffect(() => {
+        if(window.walletConnection.isSignedIn()){
+            if(threadName){
+                window.contract.get_members({thread: threadName})
+                    .then(members => {
+                        setMembers(members)
+                    }).catch(console.error)
+            }
+            
+        }
+    }, [threadName, reload])
+
     const back = () => {
         // deselect thread name 
         selectThread(null)
@@ -78,6 +92,14 @@ const ChatView = ({threadName, selectThread}) => {
                     <Button color="inherit" startIcon={<PlusOutlined />}>Add member</Button>
                 </Toolbar>
             </AppBar>
+            {/* Overview */}
+            <div css={css`
+                padding-left:1rem;
+                padding-top: 10px;
+            `}>
+                <Typography variant="h6">{members.length} Member(s)</Typography>
+            </div>
+            <Divider />
 
             {/* content */}
 
