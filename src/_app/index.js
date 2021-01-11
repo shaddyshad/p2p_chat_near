@@ -27,10 +27,10 @@ export default () => {
                     transform: translateX(-50%) translateY(-50%)
                 `}
             >
-                <Title>Welcome to NEAR Chat</Title>
+                <Title>Welcome to KaChat App</Title>
 
                 <p>
-                    To make use of the blockchain network, you need to signin with your 
+                    Hosted on NEAR blockchain network. To make use of the blockchain network, you need to signin with your 
                     NEAR account. Click the signin button below.
                 </p>
                 <p>
