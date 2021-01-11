@@ -58,7 +58,7 @@ const ThreadListing = ({threads, onSelect, createNewThread}) => {
                                 {
                                     threads.map((thread, i) => (
                                         <ListItem key={i} button onClick={() => onSelect(thread)}>
-                                            <ListItemText primary={thread}/>
+                                            <ListItemText primary={`# ${thread}`}/>
                                         </ListItem>
                                         ))
                                 }
