@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'regenerator-runtime/runtime'
 import {login, logout} from '../utils'
 import getConfig from '../config'
 import {Button, Typography} from 'antd'
 import {LoginOutlined} from '@ant-design/icons'
-import {Layout, Menu, Row, Col, Divider, Input} from 'antd'
+import {Layout, Menu, Row, Col, Divider, Input, Space} from 'antd'
 import {
     SearchOutlined,
     CommentOutlined,
@@ -20,6 +20,8 @@ const {Sider, Content, Header} = Layout
 const {TextArea} = Input 
 
 export default () => {
+    const [showGroupInput, setShowGroupInput] = useState(false);
+
     if(!window.walletConnection.isSignedIn()){
         // return the signin page 
         return (
@@ -54,7 +56,7 @@ export default () => {
             </Sider>
             <Content >
                 <Row style={{height: '100%'}}>
-                    <Col span="3">
+                    <Col span="4">
                         <div style={{paddingTop: '1rem'}}>
                             <Input.Search 
                                 placeholder="Search (non-functional)"
@@ -69,19 +71,30 @@ export default () => {
                                                 <Button
                                                     type="text"
                                                     icon={<PlusOutlined />}
-
+                                                    onClick={() => setShowGroupInput(!showGroupInput)}
                                                 />
                                             </div>
                                         </ListSubheader>
                                     }
                                 >
-
+                                    {
+                                        showGroupInput ? (
+                                            <ListItem key="1">
+                                                <Space>
+                                                    <Input
+                                                        placeholder="Thread Name"
+                                                    />
+                                                    <Button type="primary"> Add</Button>
+                                                </Space>
+                                            </ListItem>
+                                        ): null
+                                    }
                                 </List>
                             </div>
                         </div>
                     </Col>
                     <Divider type="vertical" style={{ height: '100%', margin: 0}} />
-                    <Col span="14">
+                    <Col span="13">
                         <Header className="header" style={{backgroundColor: '#f0f2f5', paddingTop: '1rem'}}>
                             <Title level={5}># Thread Name</Title>
                             <div style={{maxWidth: '15rem', display: 'flex', justifyContent: 'space-between'}}>
