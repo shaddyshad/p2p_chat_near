@@ -11,6 +11,7 @@ import moment from 'moment'
 import {LoginOutlined} from '@ant-design/icons'
 /**@jsx jsx */
 import {jsx, css} from '@emotion/react'
+import {trackPromise, usePromiseTracker} from 'react-promise-tracker'
 
 const {Title} = Typography
 
@@ -43,6 +44,7 @@ export default () => {
     /** Fetch threads from the contract */
     const [threads, setThreads] = useState([])
     const [selectedThread, setSelectedThread] = useState(null)
+    const [done, setDone] = useState(true)
 
     useEffect(() => {
         if(window.walletConnection.isSignedIn()){
@@ -65,17 +67,25 @@ export default () => {
     const createThread = threadName => {
         if(window.walletConnection.isSignedIn()){
             let ts = moment().format();
+            setDone(false);
 
             // create a new thread 
-            window.contract.new_thread({topic: threadName, ts})
+            trackPromise(window.contract.new_thread({topic: threadName, ts})
                 .then(() => {
                     // add it to threads and select it 
                     setThreads([...threads, threadName]);
                     setSelectedThread(threadName);
+                    setDone(true);
+                    
                 })
-                .catch(err => console.error(err))
+                .catch(err => {
+                    console.error(err);
+                    setDone(true);
+                }))
         }
     }
+
+    const {promiseInProgress} = usePromiseTracker()
 
     return (
         <Layout>
@@ -85,6 +95,8 @@ export default () => {
                         threads={threads}
                         onSelect={selectThread}
                         createNewThread={createThread}
+                        done={done}
+                        loading={promiseInProgress}
                     />
                 </Col>
                 <Divider type="vertical" style={{ height: '100%', margin: 0}} />

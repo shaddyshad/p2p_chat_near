@@ -15,6 +15,7 @@ const {TextArea} = Input
 const Details = ({threadName, members}) => {
     const [message, setMessage] = useState("")
     const [messages, setMessages] = useState([])
+    const [showNots, setShowNots] = useState(false);
 
     const sendMessage = () => {
         let ts = moment().format()
@@ -22,6 +23,8 @@ const Details = ({threadName, members}) => {
         window.contract.send_message({topic: threadName, message, ts})
             .then(() => {
                 console.log("Message sent")
+                setMessage("")
+
             }).catch(console.error)
     }
 
@@ -31,8 +34,7 @@ const Details = ({threadName, members}) => {
             window.contract.get_messages({topic: threadName})
                 .then(messages => {
                     let {Ok} = messages
-                    // setMessages(Ok)
-                    console.log(Ok)
+                    setMessages(Ok.map(msg => JSON.parse(msg)))
                 }).catch(err => {
                     console.log(err)
                 })

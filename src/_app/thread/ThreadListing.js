@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 /** @jsx jsx */
 import {css, jsx} from '@emotion/react'
 import {Input, Typography, Button, Space} from 'antd'
@@ -15,15 +15,18 @@ import {PlusOutlined} from '@ant-design/icons'
 const {Search} = Input 
 const {Title, Text} = Typography
 
-const ThreadListing = ({threads, onSelect, createNewThread}) => {
+const ThreadListing = ({threads, onSelect, createNewThread, done, loading}) => {
     const [search, handleSearch] = useState("");
     const [showInput, setShowInput] = useState(false);
     const [threadName, setThreadName] = useState("");
 
     const createThread = () => {
-        createNewThread(threadName);
-        setShowInput(false);
+        createNewThread(threadName) 
     }
+
+    useEffect(() => {
+        setShowInput(!done);
+    }, [!done])
 
     return (
         <div
@@ -72,7 +75,7 @@ const ThreadListing = ({threads, onSelect, createNewThread}) => {
                             <ListItem>
                                 <Space>
                                     <Input type="text" placeholder="Thread name" value={threadName} onChange={e => setThreadName(e.target.value)} />
-                                    <Button type="primary" onClick={createThread}>Create </Button>
+                                    <Button type="primary" onClick={createThread} loading={loading}>Create </Button>
                                 </Space>
                             </ListItem>
                         ): null 
