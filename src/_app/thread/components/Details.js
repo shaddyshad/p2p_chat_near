@@ -6,16 +6,18 @@ import {jsx, css} from '@emotion/react'
 // icons 
 import {PlusOutlined, SendOutlined} from '@ant-design/icons'
 import moment from 'moment'
+import AddMember from './AddMember'
 
 
 const {Header} = Layout 
 const {Text, Title} = Typography
 const {TextArea} = Input 
 
-const Details = ({threadName, members}) => {
+const Details = ({threadName, members, addMember}) => {
     const [message, setMessage] = useState("")
     const [messages, setMessages] = useState([])
     const [sent, setSent] = useState(0);
+    const [showModal, setShowModal] = useState(false)
 
     const sendMessage = () => {
         let ts = moment().format()
@@ -51,7 +53,7 @@ const Details = ({threadName, members}) => {
                     justifyContent: space-between;
                 `}>
                     <Text type="secondary" style={{lineHeight: '2.2rem'}}> {members.length} Member(s)</Text>
-                    <Button type="text" icon={<PlusOutlined />}>Add member</Button>
+                    <Button type="text" icon={<PlusOutlined />} onClick={() => setShowModal(true)}>Add member</Button>
                 </div>
             </Header> 
             <Divider />
@@ -88,6 +90,12 @@ const Details = ({threadName, members}) => {
 
                 <Button type="primary" shape="circle" icon={<SendOutlined />} style={{position: 'absolute', bottom: 30, right: 30}} onClick={sendMessage} />
             </div>
+            <AddMember 
+                isVisible={showModal}
+                threadName={threadName}
+                closeModal={e => setShowModal(false)}
+                addMember={addMember}
+            />
         </div>
     )
 }
