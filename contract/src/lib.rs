@@ -1,11 +1,10 @@
 use env::log;
 // To conserve gas, efficient serialization is achieved through Borsh (http://borsh.io/)
-use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
+use near_sdk::{borsh::{self, BorshDeserialize, BorshSerialize}};
 use near_sdk::wee_alloc;
 use near_sdk::{env, near_bindgen};
-use std::time::SystemTime;
-use chrono::offset::Local;
-use chrono::DateTime;
+use serde::{Serialize, Deserialize};
+
 
 
 #[global_allocator]
@@ -13,32 +12,20 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 
 // message type 
-#[derive(Default,BorshDeserialize, BorshSerialize, Clone)]
+#[derive(Default,BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
 pub struct Message {
     pub message: String,
     pub sender: String,
     pub ts: String
 }
 
-impl Message {
-    pub fn new(message: String, sender: String) -> Self {
-        let now = SystemTime::now();
-        let datetime: DateTime<Local> = now.into();
-        let ts: String = format!("{}", datetime.format("%d/%m/%Y %T"));
-        
-        Self {
-            message,
-            sender,
-            ts
-        }
-    }
-}
 // a thread where messages can be sent to 
 #[derive(Default, BorshDeserialize, BorshSerialize)]
 pub struct Thread {
     pub messages: Vec<Message>,
     pub members: Vec<String>,
-    pub topic: String
+    pub topic: String,
+    pub ts: String
 }
 
 impl Thread {
@@ -97,7 +84,7 @@ impl Messages {
     }
 
     // send a message to a thread 
-    pub fn send_message(&mut self, topic: String, message: String) -> Result<(), String>{
+    pub fn send_message(&mut self, topic: String, message: String, ts: String) -> Result<(), String>{
         if message.is_empty() {
             return Err("Message cannot be empty".into());
         }
@@ -118,7 +105,11 @@ impl Messages {
         if let Some(thread) = thread {
             // check if user is a member 
             if thread.members.contains(&account_id){
-                let new_message = Message::new(message, account_id);
+                let new_message = Message{
+                    ts,
+                    message,
+                    sender: account_id
+                };
 
                 thread.insert(new_message);
                 Ok(())
@@ -134,12 +125,16 @@ impl Messages {
     }
 
     // get messages from a specific thread 
-    pub fn get_messages(&self, topic: String) -> Result<Vec<(String, String)>, String>{
+    pub fn get_messages(&self, topic: String) -> Result<Vec<String>, String>{
         let thread = self.threads.iter()
             .find(|t| t.topic == topic);
 
         if let Some(thread) = thread {
-            Ok(thread.messages.clone())
+            let messages : Vec<String> = thread.messages.iter()
+                .map(|m| serde_json::to_string(m).expect("can serialize message"))
+                .collect();
+
+            Ok(messages)
         }else{
             return Err(format!(
                 "Thread {} not found",
@@ -149,7 +144,7 @@ impl Messages {
     }
 
     // create a new thread 
-    pub fn new_thread(&mut self, topic: String) -> Result<(), String>{
+    pub fn new_thread(&mut self, topic: String, ts: String) -> Result<(), String>{
         let thread = self.threads.iter()
             .find(|t| t.topic == topic);
 
@@ -162,10 +157,14 @@ impl Messages {
 
         let account_id = env::signer_account_id();
 
+        // timestamp 
+
+
         let new_thread = Thread {
             messages: vec![],
             members: vec![account_id],
-            topic
+            topic,
+            ts
         };
 
         self.threads.push(new_thread);
