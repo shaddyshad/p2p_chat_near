@@ -13,7 +13,7 @@ import {LoginOutlined} from '@ant-design/icons'
 import {jsx, css} from '@emotion/react'
 import {trackPromise, usePromiseTracker} from 'react-promise-tracker'
 
-const {Title} = Typography
+const {Title, Text} = Typography
 
 export default () => {
     if(!window.walletConnection.isSignedIn()){
@@ -29,9 +29,13 @@ export default () => {
             >
                 <Title>Welcome to KaChat App</Title>
 
+                <Title level={5}>
+                    Hosted on NEAR blockchain network. 
+                </Title>
                 <p>
-                    Hosted on NEAR blockchain network. To make use of the blockchain network, you need to signin with your 
-                    NEAR account. Click the signin button below.
+                    To make use of the blockchain network, you need to signin with your 
+                    NEAR account. Click the signin button below 
+                    <Text type="secondary">(There's a free account option available).</Text>
                 </p>
                 <p>
                     <Button type="primary" size="large" shape="rounded" icon={<LoginOutlined />} onClick={login}>Signin</Button>
