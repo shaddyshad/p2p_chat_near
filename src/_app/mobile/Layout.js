@@ -1,6 +1,4 @@
 import React, { useState } from 'react'
-import {Layout, Menu} from 'antd'
-import {logout} from '../utils'
 /** @jsx jsx */
 import {jsx, css} from '@emotion/react'
 import {
@@ -8,7 +6,6 @@ import {
     BottomNavigationAction,
     AppBar,
     Toolbar,
-    Typography,
     InputBase
 } from '@material-ui/core'
 import {makeStyles, fade} from '@material-ui/core/styles'
@@ -20,7 +17,6 @@ import {
     SearchOutlined
 } from '@ant-design/icons'
 
-const {Sider, Content} = Layout
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -73,17 +69,14 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-export default ({children}) => {
-    const [value, setValue] = useState(0)
+export default ({children, selected, setSelected, threads}) => {
     const classes = useStyles();
 
     return (
         <div css={css`
             min-height: 100vh;
         `}>
-            <div className="is-hidden-tablet">
-                {/* Topbar mobile */}
-                <AppBar position="static" className={classes.appBar}>
+            <AppBar position="static" className={classes.appBar}>
                     <Toolbar>
                         <div className={classes.search}>
                             <div className={classes.searchIcon}>
@@ -104,35 +97,18 @@ export default ({children}) => {
                     height: 100%;
                     padding: 1rem;
                 `}>
-                    Main content
+                    {children}
                 </div>
                 {/* Bottom bar mobile */}
                 <BottomNavigation
-                    value={value}
-                    onChange={(e, v) => setValue(v)}
+                    value={selected}
+                    onChange={(e, v) => setSelected(v)}
                     showLabels
                     className={classes.root}
                 >
                     <BottomNavigationAction label="Chats" icon={<CommentOutlined />} />
                     <BottomNavigationAction label="Profile" icon={<UserOutlined/>} />
                 </BottomNavigation>
-            </div>
-            <Layout style={{minHeight: '100vh'}} className="is-hidden-mobile">
-                <Sider collapsed={true} className="is-hidden-mobile">
-                    <div className="logo" />
-                    <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']} style={{height: '100%', backgroundColor: '#00264A'}}>
-                        <Menu.Item key="1" icon={<CommentOutlined />} />
-                        <Menu.ItemGroup style={{position: 'absolute', bottom: 10, width: '100%'}}>
-                            <Menu.Divider/>
-                            <Menu.Item key={3} icon={<UserOutlined />} onClick={logout} />
-                        </Menu.ItemGroup>
-                        
-                    </Menu>
-                </Sider>
-                <Content>
-                    {children}
-                </Content>
-        </Layout>
         </div>
         
     )

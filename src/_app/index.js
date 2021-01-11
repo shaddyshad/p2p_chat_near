@@ -12,6 +12,8 @@ import {LoginOutlined} from '@ant-design/icons'
 /**@jsx jsx */
 import {jsx, css} from '@emotion/react'
 import {trackPromise, usePromiseTracker} from 'react-promise-tracker'
+import MobileLayout from './mobile/Layout'
+import ChatList from './mobile/ChatList'
 
 const {Title, Text} = Typography
 
@@ -49,6 +51,7 @@ export default () => {
     const [threads, setThreads] = useState([])
     const [selectedThread, setSelectedThread] = useState(null)
     const [done, setDone] = useState(true)
+    const [selected, setSelected] = useState(0)
 
     useEffect(() => {
         if(window.walletConnection.isSignedIn()){
@@ -56,11 +59,6 @@ export default () => {
             window.contract.get_threads({member: window.accountId})
                 .then(threads => {
                     setThreads(threads);
-
-                    // set the first thread as the default 
-                    if(threads.length){
-                        setSelectedThread(threads[0])
-                    }
                 })
         }
     }, [])
@@ -91,26 +89,55 @@ export default () => {
 
     const {promiseInProgress} = usePromiseTracker()
 
+
     return (
-        <Layout>
-            <Row style={{height: '100%'}}>
-                <Col xs={{span: 24}} lg={{span: 4}}>
-                    <ThreadListing 
-                        threads={threads}
-                        onSelect={selectThread}
-                        createNewThread={createThread}
-                        done={done}
-                        loading={promiseInProgress}
-                    />
-                </Col>
-                <Divider type="vertical" style={{ height: '100%', margin: 0}} />
-                <Col xs={{span: 24}} lg={{span: 17}}>
-                    <ThreadDetails
-                        threadName={selectedThread}
-                    />
-                </Col>
-            </Row>
-        </Layout>
+        <div>
+            {/* mobile layout */}
+            <div className="is-hidden-tablet">
+                <MobileLayout
+                    selected={selected}
+                    setSelected={setSelected}
+                >
+                    {
+                        selected === 0 ? (
+                            <ChatList
+                                threads={threads}
+                                createNewThread={createThread}
+                            />
+                        ): (
+                            <div>
+                                User profile 
+                            </div>
+                        )
+                    }
+                </MobileLayout>
+            </div>
+            {/* Desktop layout */}
+            <div className="is-hidden-mobile">
+                <Layout>
+                    <Row style={{height: '100%'}}>
+                        <Col xs={{span: 24}} lg={{span: 4}}>
+                            <ThreadListing 
+                                threads={threads}
+                                onSelect={selectThread}
+                                createNewThread={createThread}
+                                done={done}
+                                loading={promiseInProgress}
+                            />
+                        </Col>
+                        <Divider type="vertical" style={{ height: '100%', margin: 0}} />
+                        <Col xs={{span: 24}} lg={{span: 17}}>
+                            <ThreadDetails
+                                threadName={selectedThread}
+                            />
+                        </Col>
+                    </Row>
+                </Layout>
+            </div>
+            
+            
+        </div>
+        
     )
 }
 
