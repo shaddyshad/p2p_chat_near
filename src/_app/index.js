@@ -94,35 +94,42 @@ export default () => {
         <div>
             {/* mobile layout */}
             <div className="is-hidden-tablet">
-                <MobileLayout
-                    selected={selected}
-                    setSelected={setSelected}
-                >
-                    {
-                        selected === 0 ? (
-                            <ChatList
-                                threads={threads}
-                                createNewThread={createThread}
-                            />
-                        ): (
-                            <div css={css`
-                                padding: 1rem
-                            `}>
-                                <div css={css`
-                                    display: flex;
-                                    justify-content: space-between;
-                                    padding-bottom: 1rem;
-                                `}>
-                                    <Title level={3}>Profile</Title>
-                                    <Button type="text" icon={<LogoutOutlined />}>Signout</Button>
-                                </div>
-                                <Descriptions title="Profile Info">
-                                    <Descriptions.Item label="User Id"> {window.accountId}</Descriptions.Item>
-                                </Descriptions>
-                            </div>
-                        )
-                    }
-                </MobileLayout>
+                {
+                    selectedThread ? (
+                        <p>Show messages</p>
+                    ): (
+                        <MobileLayout
+                            selected={selected}
+                            setSelected={setSelected}
+                        >
+                            {
+                                selected === 0 ? (
+                                    <ChatList
+                                        threads={threads}
+                                        createNewThread={createThread}
+                                        selectThread={selectThread}
+                                    />
+                                ): (
+                                    <div css={css`
+                                        padding: 1rem
+                                    `}>
+                                        <div css={css`
+                                            display: flex;
+                                            justify-content: space-between;
+                                            padding-bottom: 1rem;
+                                        `}>
+                                            <Title level={3}>Profile</Title>
+                                            <Button type="text" icon={<LogoutOutlined />}>Signout</Button>
+                                        </div>
+                                        <Descriptions title="Profile Info">
+                                            <Descriptions.Item label="User Id"> {window.accountId}</Descriptions.Item>
+                                        </Descriptions>
+                                    </div>
+                                )
+                            }
+                        </MobileLayout>
+                    )
+                }
             </div>
             {/* Desktop layout */}
             <div className="is-hidden-mobile">

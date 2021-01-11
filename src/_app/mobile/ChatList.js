@@ -11,35 +11,20 @@ import {
     ListItemAvatar,
     ListItem
 } from '@material-ui/core'
-import {
-    deepOrange,
-    deepPurple,
-    red
-} from '@material-ui/core/colors'
-import {
-    makeStyles
-} from '@material-ui/core/styles'
 
 const {Title} = Typography
 
-const useStyles = makeStyles((theme) => ({
-    normal: {}
-}))
-
-const ChatList = ({threads}) => {
-    const classes = useStyles()
+const ChatList = ({threads, selectThread}) => {
 
     const firstChars = str => {
         // return the first chars 
         let split = str.split(" ");
         let ff = split.map(s => s[0].toUpperCase());
+        let ft = ff.slice(0,2);
 
-        return ff.join("")
+        return ft.join("")
     }
 
-    const selectThread = (name) => {
-        console.log(name)
-    }
 
     return (
         <div css={css`
