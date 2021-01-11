@@ -38,8 +38,13 @@ const ChatView = ({threadName, selectThread}) => {
     const [sent,setSent] = useState(0)
 
     const sendMessage = () => {
-        // send message logic 
-        console.log(message);
+        let ts = moment().format()
+
+        window.contract.send_message({topic: threadName, message, ts})
+            .then(() => {
+                setMessage("")
+                setSent(sent + 1)
+            }).catch(console.error)
     }
 
     // get the mesages
