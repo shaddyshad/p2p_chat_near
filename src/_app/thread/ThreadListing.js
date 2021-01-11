@@ -25,7 +25,6 @@ const ThreadListing = ({threads, onSelect, createNewThread}) => {
         setShowInput(false);
     }
 
-
     return (
         <div
             css={css`
