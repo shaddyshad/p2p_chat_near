@@ -4,17 +4,19 @@ import {login, logout} from '../utils'
 import getConfig from '../config'
 import {Button, Typography} from 'antd'
 import {LoginOutlined} from '@ant-design/icons'
-import {Layout, Menu, Row, Col, Divider} from 'antd'
+import {Layout, Menu, Row, Col, Divider, Input} from 'antd'
 import {
     SearchOutlined,
     CommentOutlined,
-    UserOutlined,
-    PlusOutlined
+    PlusCircleFilled,
+    PlusOutlined,
+    LogoutOutlined
 } from '@ant-design/icons'
-import {List, ListItem, ListItemText, ListSubheader} from '@material-ui/core'
+import {List, ListItem, ListItemText, ListSubheader, ListItemIcon} from '@material-ui/core'
 
 const {Title, Text} = Typography
 const {Sider, Content, Header} = Layout
+const {TextArea} = Input 
 
 export default () => {
     if(!window.walletConnection.isSignedIn()){
@@ -44,7 +46,7 @@ export default () => {
                     <Menu.Item key="2" icon={<SearchOutlined />} />
                     <Menu.ItemGroup style={{position: 'absolute', bottom: 10, width: '100%'}}>
                         <Menu.Divider/>
-                        <Menu.Item key={3} icon={<UserOutlined />} onClick={logout} />
+                        <Menu.Item key={3} icon={<LogoutOutlined />} onClick={logout} />
                     </Menu.ItemGroup>
                     
                 </Menu>
@@ -82,6 +84,14 @@ export default () => {
                             </div>
                         </Header>
                         <Divider />
+
+                        <div className="msg-input" style={{position: 'absolute', bottom: '1rem', width: '100%', padding: '1rem'}}>
+                            <TextArea 
+                                placeholder="Type a message"
+                                autoSize={{minRows: 3, maxRows: 4}}
+                                style={{borderRadius: 10}}
+                            />
+                        </div>
                     </Col>
                     <Divider type="vertical" style={{ height: '100%', margin: 0}}/>
                     <Col span="6">
@@ -89,6 +99,24 @@ export default () => {
                             <Title level={5}>Thread Info</Title>
                         </Header>
                         <Divider />
+                        <div style={{padding: '1rem'}}>
+                            <List 
+                                component="nav"
+                                aria-labelledby="member-list"
+                                subheader={
+                                    <ListSubheader>
+                                        <Title type="secondary" level={5}>MEMBERS</Title>
+                                    </ListSubheader>
+                                }
+                            >   
+                                <ListItem key="1">
+                                    <ListItemIcon>
+                                        <PlusCircleFilled />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Shaddy Shad" />
+                                </ListItem>
+                            </List>
+                        </div>
                     </Col>
                 </Row>
             </Content>
