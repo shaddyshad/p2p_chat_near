@@ -19,6 +19,10 @@ const {Title, Text} = Typography
 const {Sider, Content, Header} = Layout
 const {TextArea} = Input 
 
+function ListItemLink(props){
+    return <ListItem button component="a" {...props} />
+}
+
 export default () => {
     const [showGroupInput, setShowGroupInput] = useState(false);
 
@@ -77,9 +81,12 @@ export default () => {
                                         </ListSubheader>
                                     }
                                 >
+                                    <ListItem button>
+                                        <ListItemText primary="# Welcome" />
+                                    </ListItem>
                                     {
                                         showGroupInput ? (
-                                            <ListItem key="1">
+                                            <ListItem key="110111">
                                                 <Space>
                                                     <Input
                                                         placeholder="Thread Name"
@@ -96,21 +103,41 @@ export default () => {
                     <Divider type="vertical" style={{ height: '100%', margin: 0}} />
                     <Col span="13">
                         <Header className="header" style={{backgroundColor: '#f0f2f5', paddingTop: '1rem'}}>
-                            <Title level={5}># Thread Name</Title>
+                            <Title level={5}># Welcome</Title>
                             <div style={{maxWidth: '15rem', display: 'flex', justifyContent: 'space-between'}}>
-                                <Text type="secondary" style={{lineHeight: '2.2rem'}}>6 Members</Text>
+                                <Text type="secondary" style={{lineHeight: '2.2rem'}}>1 Member(s)</Text>
                                 <Button type="text" icon={<PlusOutlined />}>Add member</Button>
                             </div>
                         </Header>
                         <Divider />
+                            <div className="chat-area">
+                                <div className="intro-text has-text-centered" style={{
+                                    paddingTop: '2rem', 
+                                    paddingBottom: "1rem",
+                                    position: "absolute",
+                                    top: "50%",
+                                    left: "50%",
+                                    transform: "translateX(-50%) translateY(-50%)"
+                                }}>
+                                    <Title level={4}>Welcome to NEAR chat app</Title>
+                                    <Text> 
+                                        This is the welcome thread. It serves as an introduction to this awesome app. 
+                                        You can create new threads and invite friends to chat.
 
+                                        To get started. Click on the '+' button next to <code>Threads</code>    
+                                    </Text>
+                                </div>
+                            </div>
                         <div className="msg-input" style={{position: 'absolute', bottom: '1rem', width: '100%', padding: '1rem'}}>
+                            
                             <TextArea 
                                 placeholder="Type a message"
                                 autoSize={{minRows: 3, maxRows: 4}}
                                 style={{borderRadius: 10}}
+                                disabled
+                                showCount
                             />
-                            <Button type="primary" shape="circle" icon={<SendOutlined />} style={{position: 'absolute', bottom: 25, right: 30}}/>
+                            <Button type="primary" shape="circle" icon={<SendOutlined />} style={{position: 'absolute', bottom: 50, right: 30}}/>
                         </div>
                     </Col>
                     <Divider type="vertical" style={{ height: '100%', margin: 0}}/>
@@ -133,7 +160,7 @@ export default () => {
                                     <ListItemIcon>
                                         <PlusCircleFilled />
                                     </ListItemIcon>
-                                    <ListItemText primary="Shaddy Shad" />
+                                    <ListItemText primary="dev-1610214151818-9431498" />
                                 </ListItem>
                             </List>
                         </div>
