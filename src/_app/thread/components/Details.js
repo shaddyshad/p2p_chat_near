@@ -17,7 +17,9 @@ const Details = ({threadName, members}) => {
     const [messages, setMessages] = useState([])
 
     const sendMessage = () => {
-        window.contract.send_message({topic: threadName, message})
+        let ts = moment().format()
+
+        window.contract.send_message({topic: threadName, message, ts})
             .then(() => {
                 console.log("Message sent")
             }).catch(console.error)
@@ -29,7 +31,8 @@ const Details = ({threadName, members}) => {
             window.contract.get_messages({topic: threadName})
                 .then(messages => {
                     let {Ok} = messages
-                    setMessages(Ok)
+                    // setMessages(Ok)
+                    console.log(Ok)
                 }).catch(err => {
                     console.log(err)
                 })

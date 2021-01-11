@@ -5,12 +5,27 @@ import Layout from './Layout'
 import {Row, Col, Divider} from 'antd'
 import ThreadListing from './thread/ThreadListing'
 import ThreadDetails from './thread/ThreadDetails';
+import {Button, Typography} from 'antd'
+import moment from 'moment'
+
+import {LoginOutlined} from '@ant-design/icons'
+/**@jsx jsx */
+import {jsx, css} from '@emotion/react'
+
+const {Title} = Typography
 
 export default () => {
     if(!window.walletConnection.isSignedIn()){
         // return the signin page 
         return (
-            <main className="has-text-centered">
+            <main className="has-text-centered"
+                css={css`
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translateX(-50%) translateY(-50%)
+                `}
+            >
                 <Title>Welcome to NEAR Chat</Title>
 
                 <p>
@@ -49,8 +64,10 @@ export default () => {
     // create a new thread 
     const createThread = threadName => {
         if(window.walletConnection.isSignedIn()){
+            let ts = moment().format();
+
             // create a new thread 
-            window.contract.new_thread({topic: threadName})
+            window.contract.new_thread({topic: threadName, ts})
                 .then(() => {
                     // add it to threads and select it 
                     setThreads([...threads, threadName]);
