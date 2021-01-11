@@ -5,10 +5,10 @@ import Layout from './Layout'
 import {Row, Col, Divider} from 'antd'
 import ThreadListing from './thread/ThreadListing'
 import ThreadDetails from './thread/ThreadDetails';
-import {Button, Typography} from 'antd'
+import {Button, Typography, Descriptions} from 'antd'
 import moment from 'moment'
 
-import {LoginOutlined} from '@ant-design/icons'
+import {LoginOutlined, LogoutOutlined} from '@ant-design/icons'
 /**@jsx jsx */
 import {jsx, css} from '@emotion/react'
 import {trackPromise, usePromiseTracker} from 'react-promise-tracker'
@@ -105,8 +105,20 @@ export default () => {
                                 createNewThread={createThread}
                             />
                         ): (
-                            <div>
-                                User profile 
+                            <div css={css`
+                                padding: 1rem
+                            `}>
+                                <div css={css`
+                                    display: flex;
+                                    justify-content: space-between;
+                                    padding-bottom: 1rem;
+                                `}>
+                                    <Title level={3}>Profile</Title>
+                                    <Button type="text" icon={<LogoutOutlined />}>Signout</Button>
+                                </div>
+                                <Descriptions title="Profile Info">
+                                    <Descriptions.Item label="User Id"> {window.accountId}</Descriptions.Item>
+                                </Descriptions>
                             </div>
                         )
                     }
