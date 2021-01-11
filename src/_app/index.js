@@ -35,6 +35,11 @@ export default () => {
             window.contract.get_threads({member: window.accountId})
                 .then(threads => {
                     setThreads(threads);
+
+                    // set the first thread as the default 
+                    if(threads.length){
+                        setSelectedThread(threads[0])
+                    }
                 })
         }
     }, [])
