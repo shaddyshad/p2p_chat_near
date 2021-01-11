@@ -11,6 +11,7 @@
  *
  */
 
+use env::log;
 // To conserve gas, efficient serialization is achieved through Borsh (http://borsh.io/)
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::wee_alloc;
@@ -64,6 +65,21 @@ impl Messages {
             .collect();
 
         topics 
+    }
+
+    /// get the members of a thread 
+    pub fn get_members(&self, thread: String) -> Vec<String> {
+        // check if the thread is available 
+        let thread = self.threads.iter()
+            .find(|t| t.topic == thread);
+
+        if let Some(thread) = thread {
+            log(b"thread found");
+            
+            return thread.members.clone();
+        }
+        
+        vec![]
     }
 
     // send a message to a thread 
