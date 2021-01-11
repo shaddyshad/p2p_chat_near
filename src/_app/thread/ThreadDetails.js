@@ -6,19 +6,29 @@ import Info from './components/Info'
 
 const ThreadDetails = ({threadName}) => {
     const [members, setMembers] = useState([])
+    const [reload, setReloadMembers] = useState(0)
 
     useEffect(() => {
         if(window.walletConnection.isSignedIn()){
             if(threadName){
                 window.contract.get_members({thread: threadName})
                     .then(members => {
-                        console.log("members ", members);
                         setMembers(members)
                     }).catch(console.error)
             }
             
         }
-    }, [threadName])
+    }, [threadName, reload])
+
+    const addMember = (name) => {
+        if(window.walletConnection.isSignedIn()){
+            window.contract.invite({topic: threadName, account_id: name})
+                .then(() => {
+                    console.log("%cMember added ", "color:yellow;")
+                    setReloadMembers(reload + 1)
+                })
+        }
+    }
 
 
     if(!threadName){
@@ -28,7 +38,7 @@ const ThreadDetails = ({threadName}) => {
     return(
         <Row style={{height: '100%'}}>
             <Col lg={{span: 18}} xs={{span:24}}>
-                <Details threadName={threadName} members={members} />
+                <Details threadName={threadName} members={members} addMember={addMember} />
             </Col>
             <Divider type="vertical" style={{ height: '100%', margin: 0}} />
             <Col lg={{span: 5}} xs={{span: 0}}>
