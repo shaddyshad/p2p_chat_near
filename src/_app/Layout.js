@@ -13,7 +13,7 @@ const {Sider, Content} = Layout
 export default ({children}) => {
     return (
         <Layout style={{minHeight: '100vh'}}>
-            <Sider collapsed={true}>
+            <Sider collapsed={true} className="is-hidden-mobile">
                 <div className="logo" />
                 <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']} style={{height: '100%', backgroundColor: '#00264A'}}>
                     <Menu.Item key="1" icon={<CommentOutlined />} />
@@ -26,18 +26,7 @@ export default ({children}) => {
                 </Menu>
             </Sider>
             <Content>
-                <Layout style={{minHeight: '100vh'}}>
-                    <Sider collapsed={false}>
-                        <Menu theme='dark' mode="inline" style={{height: '100%', marginTop: '18px'}} openKeys={['110']} defaultSelectedKeys={['1']}>
-                            <Menu.SubMenu title="Groups" key="110">
-                                <Menu.Item key="1"># Group 1</Menu.Item>
-                            </Menu.SubMenu>
-                        </Menu>
-                    </Sider>
-                    <Content>
-                        {children}
-                    </Content>
-                </Layout>
+                {children}
             </Content>
         </Layout>
     )
