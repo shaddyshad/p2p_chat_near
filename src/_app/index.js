@@ -10,7 +10,8 @@ import {
     CommentOutlined,
     PlusCircleFilled,
     PlusOutlined,
-    LogoutOutlined
+    LogoutOutlined,
+    SendOutlined
 } from '@ant-design/icons'
 import {List, ListItem, ListItemText, ListSubheader, ListItemIcon} from '@material-ui/core'
 
@@ -54,24 +55,29 @@ export default () => {
             <Content >
                 <Row style={{height: '100%'}}>
                     <Col span="3">
-                        <div style={{paddingTop: '2rem'}}>
-                            <List component="nav"
-                                aria-labelledby="groups-listing"
-                                subheader={
-                                    <ListSubheader component="div">
-                                        <div style={{display:'flex', justifyContent: 'space-between'}}>
-                                            <Title level={4}>Threads</Title>
-                                            <Button
-                                                type="text"
-                                                icon={<PlusOutlined />}
+                        <div style={{paddingTop: '1rem'}}>
+                            <Input.Search 
+                                placeholder="Search (non-functional)"
+                            />
+                            <div style={{paddingTop:'2rem'}}>
+                                <List component="nav"
+                                    aria-labelledby="groups-listing"
+                                    subheader={
+                                        <ListSubheader component="div">
+                                            <div style={{display:'flex', justifyContent: 'space-between'}}>
+                                                <Title level={4}>Threads</Title>
+                                                <Button
+                                                    type="text"
+                                                    icon={<PlusOutlined />}
 
-                                            />
-                                        </div>
-                                    </ListSubheader>
-                                }
-                            >
+                                                />
+                                            </div>
+                                        </ListSubheader>
+                                    }
+                                >
 
-                            </List>
+                                </List>
+                            </div>
                         </div>
                     </Col>
                     <Divider type="vertical" style={{ height: '100%', margin: 0}} />
@@ -91,6 +97,7 @@ export default () => {
                                 autoSize={{minRows: 3, maxRows: 4}}
                                 style={{borderRadius: 10}}
                             />
+                            <Button type="primary" shape="circle" icon={<SendOutlined />} style={{position: 'absolute', bottom: 25, right: 30}}/>
                         </div>
                     </Col>
                     <Divider type="vertical" style={{ height: '100%', margin: 0}}/>

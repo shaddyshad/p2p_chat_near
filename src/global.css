@@ -21,12 +21,11 @@ html {
 
 body {
   margin: 0;
-  padding: 1em;
 }
 
 main {
   margin: 0 auto;
-  max-width: 25em;
+  max-width: 30em;
 }
 
 h1 {
