@@ -14,6 +14,7 @@ import {jsx, css} from '@emotion/react'
 import {trackPromise, usePromiseTracker} from 'react-promise-tracker'
 import MobileLayout from './mobile/Layout'
 import ChatList from './mobile/ChatList'
+import ChatView from './mobile/ChatView'
 
 const {Title, Text} = Typography
 
@@ -96,7 +97,7 @@ export default () => {
             <div className="is-hidden-tablet">
                 {
                     selectedThread ? (
-                        <p>Show messages</p>
+                        <ChatView threadName={selectedThread} selectThread={selectThread} />
                     ): (
                         <MobileLayout
                             selected={selected}
