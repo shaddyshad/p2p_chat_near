@@ -14,6 +14,7 @@ import {
 import {LeftOutlined, PlusOutlined, SendOutlined} from '@ant-design/icons'
 import {Input, Button as AntButton, Comment, Divider} from 'antd'
 import moment from 'moment'
+import ThreadInfo from './components/ThreadInfo'
 
 
 const {TextArea} = Input 
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     },
     menuButton: {
         marginRight: theme.spacing(2),
+        fontSize: '1rem'
     },
     title: {
         flexGrow: 1,
@@ -38,6 +40,7 @@ const ChatView = ({threadName, selectThread}) => {
     const [sent,setSent] = useState(0)
     const [reload, setReload] = useState(0);
     const [members, setMembers] = useState([])
+    const [info, setInfo] = useState(false)
 
     const sendMessage = () => {
         let ts = moment().format()
@@ -68,6 +71,7 @@ const ChatView = ({threadName, selectThread}) => {
                 window.contract.get_members({thread: threadName})
                     .then(members => {
                         setMembers(members)
+                        setReload(reload + 1)
                     }).catch(console.error)
             }
             
@@ -79,6 +83,11 @@ const ChatView = ({threadName, selectThread}) => {
         selectThread(null)
     }
 
+    const showDetails = () => {
+        // set drawer true 
+        setInfo(true )
+    }
+
     return (
         <div css={css`
             height: 100%;
@@ -88,23 +97,15 @@ const ChatView = ({threadName, selectThread}) => {
                     <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label='back' onClick={back}>
                         <LeftOutlined />
                     </IconButton>
-                    <Typography variant="h6" className={classes.title}>{threadName}</Typography>
-                    <Button color="inherit" startIcon={<PlusOutlined />}>Add member</Button>
+                    <Typography variant="h6" className={classes.title} onClick={showDetails}>{threadName}</Typography>
+                    <Button color="inherit" startIcon={<PlusOutlined />} >Add member</Button>
                 </Toolbar>
             </AppBar>
-            {/* Overview */}
-            <div css={css`
-                padding-left:1rem;
-                padding-top: 10px;
-            `}>
-                <Typography variant="h6">{members.length} Member(s)</Typography>
-            </div>
-            <Divider />
 
             {/* content */}
 
             <div css={css`
-                padding: 1rem;
+                padding: 0 1rem;
                 overflow: auto;
             `}>
                 {
@@ -133,6 +134,14 @@ const ChatView = ({threadName, selectThread}) => {
 
                 <AntButton size="large" type="primary" shape="circle" icon={<SendOutlined />} style={{position: 'absolute', bottom: 20, right: 20}} onClick={sendMessage} />
             </div>
+
+            {/* Info drawer */}
+            <ThreadInfo 
+                members={members}
+                threadName={threadName}
+                show={info}
+                close={() => setInfo(false)}
+            />
         </div>
     )
 }
