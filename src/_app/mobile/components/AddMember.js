@@ -1,16 +1,41 @@
 import React, {useState} from 'react';
 import {Drawer, Button, Select} from 'antd'
+import {trackPromise, usePromiseTracker} from 'react-promise-tracker'
 
-const AddMember = ({show, close, threadName}) => {
+const AddMember = ({show, close, threadName, reloadMembers}) => {
     const [members, setMembers] = useState([])
 
     const add = (m) => {
-        console.log(m)
+        setMembers(m)
     }
 
     const addMembers = () => {
         // add multiple members to thread 
+        let non_empty = members.filter(m => m !== "");
+        nom_empty = non_empty.map(m => m.trim())
+        
+        let unique = [...new Set(non_empty)];
+
+        if(unique.length){
+            if(window.walletConnection.isSignedIn()){
+                trackPromise(
+                    window.contract.invite_multiple({topic: threadName, members: unique})
+                        .then(() => {
+                            // reload members 
+                            reloadMembers();
+                            close();
+                        }).catch(err => {
+                            console.log(err)
+                            close();
+                        })
+                )
+            }
+        }
+
+        
     }
+
+    const {promiseInProgress} = usePromiseTracker();
 
     return (
         <Drawer 
@@ -27,7 +52,7 @@ const AddMember = ({show, close, threadName}) => {
                 style={{width: '100%', paddingBottom: '1rem'}}
             />
 
-            <Button type="primary" onClick={addMembers}>Add</Button>
+            <Button type="primary" onClick={addMembers} loading={promiseInProgress}>Add</Button>
         </Drawer>
     )
 }

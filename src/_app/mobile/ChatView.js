@@ -78,7 +78,7 @@ const ChatView = ({threadName, selectThread}) => {
             }
             
         }
-    }, [threadName])
+    }, [threadName, reload])
 
     const back = () => {
         // deselect thread name 
@@ -150,6 +150,7 @@ const ChatView = ({threadName, selectThread}) => {
                 threadName={threadName}
                 show={showAdd}
                 close={() => setShowAdd(false)}
+                reloadMembers={() => setReload(reload + 1)}
             />
         </div>
     )
