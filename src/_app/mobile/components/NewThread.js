@@ -82,7 +82,7 @@ const NewThread = ({ close, show, reload}) => {
                         mode="tags"
                         style={{width: '100%'}}
                         placeholder="Add multiple (optional)"
-                        defaultValue={['ank3rr.testnet']}
+                        
                     />
                 </Form.Item>
 
