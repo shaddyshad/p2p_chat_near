@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 /**@jsx jsx */
 import {jsx, css} from '@emotion/react'
-import {Typography, Button} from 'antd'
+import {Typography, Button, Divider } from 'antd'
 // icons
 import {PlusOutlined} from '@ant-design/icons'
 import {
@@ -51,13 +51,16 @@ const ChatList = ({threads, selectThread}) => {
             <List>
                 {
                     threads.map((thread, i) => (
-                        <ListItem key={i} button onClick={() => selectThread(thread)}>
-                            <ListItemAvatar>
-                                <Avatar >{firstChars(thread)}</Avatar>
+                        <>
+                            <ListItem key={i} button onClick={() => selectThread(thread)}>
+                                <ListItemAvatar>
+                                    <Avatar >{firstChars(thread)}</Avatar>
 
-                            </ListItemAvatar>
-                            <ListItemText primary={thread} />
-                        </ListItem>
+                                </ListItemAvatar>
+                                <ListItemText primary={thread} />
+                            </ListItem>
+                            <Divider />
+                        </>
                     ))
                 }
             </List>
