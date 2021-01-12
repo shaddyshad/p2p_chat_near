@@ -55,7 +55,7 @@ export default () => {
                     <Steps direction="vertical" current={4}>
                         <Step title="Signup on NEAR" description={<p>Create a free account on NEAR platform. Click <a href="https://wallet.testnet.near.org/create" target="_blank">here</a> </p>}/>
                         <Step title="Signin to KaChat" description="Click the Signin button to access the application" />
-                        <Step title="Create a Thread" description="Create a new thread and invite other users using their NEAR user ids. Has to be exchanged off-app" />
+                        <Step title="Create a Thread" description="Create a new thread and invite other users using their NEAR user id(Has to be exchanged off-app)" />
                         <Step title="Chat" description="Start sending and receiving messages" />
                     </Steps>
                 </div>
