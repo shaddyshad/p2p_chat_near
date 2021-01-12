@@ -1,4 +1,4 @@
-const CONTRACT_NAME = process.env.CONTRACT_NAME ||'near-chat-app'
+const CONTRACT_NAME = process.env.CONTRACT_NAME ||'ank3rr.testnet'
 
 function getConfig(env) {
   switch (env) {
