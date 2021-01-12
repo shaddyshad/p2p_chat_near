@@ -8,7 +8,7 @@ import ThreadDetails from './thread/ThreadDetails';
 import {Button, Typography, Descriptions} from 'antd'
 import moment from 'moment'
 
-import {LoginOutlined, LogoutOutlined} from '@ant-design/icons'
+import {LoginOutlined, LogoutOutlined, GithubOutlined} from '@ant-design/icons'
 /**@jsx jsx */
 import {jsx, css} from '@emotion/react'
 import {trackPromise, usePromiseTracker} from 'react-promise-tracker'
@@ -50,6 +50,7 @@ export default () => {
                 <Title style={{paddingTop: '3rem'}}>How It Works</Title>
                 <div css={css`
                     padding-top: 1rem;
+                    padding-bottom: 3rem;
                 `}>
                     <Steps direction="vertical" current={4}>
                         <Step title="Signup on NEAR" description={<p>Create a free account on NEAR platform. Click <a href="https://wallet.testnet.near.org/create" target="_blank">here</a> </p>}/>
@@ -58,6 +59,18 @@ export default () => {
                         <Step title="Chat" description="Start sending and receiving messages" />
                     </Steps>
                 </div>
+                <div css={css`
+                    width: 100%;
+                    padding: 1rem;
+                `}>
+                   <p> <a css={css`text-transform: underline;`} href="https://github.com/shaddyshad/p2p_chat_near.git" target="_blank">Source Code </a> </p>
+                   <p>
+                        <a href="https://github.com/shaddyshad" target="_blank">
+                            <GithubOutlined />
+                        </a>
+                   </p>
+                </div>
+                
             </main>
             
         )
