@@ -15,6 +15,7 @@ import {LeftOutlined, PlusOutlined, SendOutlined} from '@ant-design/icons'
 import {Input, Button as AntButton, Comment, Divider} from 'antd'
 import moment from 'moment'
 import ThreadInfo from './components/ThreadInfo'
+import AddMember from './components/AddMember'
 
 
 const {TextArea} = Input 
@@ -41,6 +42,7 @@ const ChatView = ({threadName, selectThread}) => {
     const [reload, setReload] = useState(0);
     const [members, setMembers] = useState([])
     const [info, setInfo] = useState(false)
+    const [showAdd, setShowAdd] = useState(false);
 
     const sendMessage = () => {
         let ts = moment().format()
@@ -76,7 +78,7 @@ const ChatView = ({threadName, selectThread}) => {
             }
             
         }
-    }, [threadName, reload])
+    }, [threadName])
 
     const back = () => {
         // deselect thread name 
@@ -98,7 +100,7 @@ const ChatView = ({threadName, selectThread}) => {
                         <LeftOutlined />
                     </IconButton>
                     <Typography variant="h6" className={classes.title} onClick={showDetails}>{threadName}</Typography>
-                    <Button color="inherit" startIcon={<PlusOutlined />} >Add member</Button>
+                    <Button color="inherit" startIcon={<PlusOutlined />} onClick={() => setShowAdd(true)} >Add member</Button>
                 </Toolbar>
             </AppBar>
 
@@ -141,6 +143,13 @@ const ChatView = ({threadName, selectThread}) => {
                 threadName={threadName}
                 show={info}
                 close={() => setInfo(false)}
+            />
+
+            {/* Add member drawer */}
+            <AddMember 
+                threadName={threadName}
+                show={showAdd}
+                close={() => setShowAdd(false)}
             />
         </div>
     )
