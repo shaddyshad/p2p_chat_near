@@ -3,7 +3,6 @@ const CONTRACT_NAME = process.env.CONTRACT_NAME ||'near-chat-app'
 function getConfig(env) {
   switch (env) {
 
-  case 'production':
   case 'mainnet':
     return {
       networkId: 'mainnet',
@@ -15,6 +14,7 @@ function getConfig(env) {
     }
   case 'development':
   case 'testnet':
+  case 'production':
     return {
       networkId: 'testnet',
       nodeUrl: 'https://rpc.testnet.near.org',
