@@ -22,10 +22,15 @@ const ChatList = ({threads, selectThread,reload}) => {
     const firstChars = str => {
         // return the first chars 
         let split = str.split(" ");
-        let ff = split.map(s => s[0].toUpperCase());
-        let ft = ff.slice(0,2);
+        if(split.length){
+            let ff = split.map(s => s[0].toUpperCase());
+            let ft = ff.slice(0,2);
 
-        return ft.join("")
+            return ft.join("")
+        }
+
+        return str[0].toUpperCase()
+        
     }
 
     const createThread = () => {
