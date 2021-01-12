@@ -15,7 +15,7 @@ import NewThread from './components/NewThread';
 
 const {Title} = Typography
 
-const ChatList = ({threads, selectThread}) => {
+const ChatList = ({threads, selectThread,reload}) => {
     const [draw, setDraw] = useState(false) 
 
 
@@ -69,6 +69,7 @@ const ChatList = ({threads, selectThread}) => {
             <NewThread 
                 show={draw}
                 close={() =>setDraw(false)}
+                reload={reload}
             />
         </div>
     )

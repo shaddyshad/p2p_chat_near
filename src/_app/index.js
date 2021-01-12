@@ -53,6 +53,7 @@ export default () => {
     const [selectedThread, setSelectedThread] = useState(null)
     const [done, setDone] = useState(true)
     const [selected, setSelected] = useState(0)
+    const [reload, setReload] = useState(0)
 
     useEffect(() => {
         if(window.walletConnection.isSignedIn()){
@@ -62,7 +63,7 @@ export default () => {
                     setThreads(threads);
                 })
         }
-    }, [])
+    }, [reload])
 
     const selectThread = thread => setSelectedThread(thread)
 
@@ -109,6 +110,7 @@ export default () => {
                                         threads={threads}
                                         createNewThread={createThread}
                                         selectThread={selectThread}
+                                        reload={() => setReload(reload+1)}
                                     />
                                 ): (
                                     <div css={css`

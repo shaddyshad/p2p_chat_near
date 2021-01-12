@@ -188,4 +188,13 @@ impl Messages {
             ))
         }
     }
+
+    // invite multiple people 
+    pub fn invite_multiple(&mut self, topic: String, members: Vec<String>) -> Result<(), String>{
+        for member in members.iter(){
+            self.invite(topic.clone(), member.clone())?;
+        }
+
+        Ok(())
+    }
 }
