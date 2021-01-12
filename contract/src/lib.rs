@@ -178,6 +178,13 @@ impl Messages {
         let thread = self.threads.iter_mut()
             .find(|t| t.topic == topic);
 
+        // ignore self 
+        let acc_id = env::signer_account_id();
+
+        if account_id == acc_id{
+            return Ok(())
+        }
+
         if let Some(t) = thread{
             t.add_member(account_id);
             Ok(())
