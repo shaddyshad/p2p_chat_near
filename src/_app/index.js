@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'regenerator-runtime/runtime'
-import {login} from '../utils'
+import {login, logout} from '../utils'
 import Layout from './Layout'
 import {Row, Col, Divider} from 'antd'
 import ThreadListing from './thread/ThreadListing'
@@ -15,8 +15,10 @@ import {trackPromise, usePromiseTracker} from 'react-promise-tracker'
 import MobileLayout from './mobile/Layout'
 import ChatList from './mobile/ChatList'
 import ChatView from './mobile/ChatView'
+import {Steps} from 'antd'
 
 const {Title, Text} = Typography
+const {Step} = Steps
 
 export default () => {
     if(!window.walletConnection.isSignedIn()){
@@ -25,9 +27,10 @@ export default () => {
             <main className="has-text-centered"
                 css={css`
                     position: absolute;
-                    top: 50%;
+                    top: 30%;
                     left: 50%;
-                    transform: translateX(-50%) translateY(-50%)
+                    transform: translateX(-50%) translateY(-10%);
+                    overflow: auto;
                 `}
             >
                 <Title>Welcome to KaChat App</Title>
@@ -40,9 +43,21 @@ export default () => {
                     NEAR account. Click the signin button below 
                     <Text type="secondary">(There's a free account option available).</Text>
                 </p>
-                <p>
+                <p css={css`margin-bottom: 1rem;`}>
                     <Button type="primary" size="large" shape="rounded" icon={<LoginOutlined />} onClick={login}>Signin</Button>
                 </p>
+
+                <Title style={{paddingTop: '3rem'}}>How It Works</Title>
+                <div css={css`
+                    padding-top: 1rem;
+                `}>
+                    <Steps direction="vertical" current={4}>
+                        <Step title="Signup on NEAR" description={<p>Create a free account on NEAR platform. Click <a href="https://wallet.testnet.near.org/create" target="_blank">here</a> </p>}/>
+                        <Step title="Signin to KaChat" description="Click the Signin button to access the application" />
+                        <Step title="Create a Thread" description="Create a new thread and invite other users using their NEAR user ids. Has to be exchanged off-app" />
+                        <Step title="Chat" description="Start sending and receiving messages" />
+                    </Steps>
+                </div>
             </main>
             
         )
@@ -122,7 +137,7 @@ export default () => {
                                             padding-bottom: 1rem;
                                         `}>
                                             <Title level={3}>Profile</Title>
-                                            <Button type="text" icon={<LogoutOutlined />}>Signout</Button>
+                                            <Button type="text" icon={<LogoutOutlined />} onClick={logout}>Signout</Button>
                                         </div>
                                         <Descriptions title="Profile Info">
                                             <Descriptions.Item label="User Id"> {window.accountId}</Descriptions.Item>

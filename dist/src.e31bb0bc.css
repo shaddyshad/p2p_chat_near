@@ -28292,6 +28292,7 @@ div.ant-typography-edit-content.ant-typography-rtl {
 
 html, body, #root {
   height: 100%;
+  overflow: auto;
 }
 
 body {
