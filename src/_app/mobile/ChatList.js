@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 /**@jsx jsx */
 import {jsx, css} from '@emotion/react'
 import {Typography, Button} from 'antd'
@@ -11,10 +11,13 @@ import {
     ListItemAvatar,
     ListItem
 } from '@material-ui/core'
+import NewThread from './components/NewThread';
 
 const {Title} = Typography
 
 const ChatList = ({threads, selectThread}) => {
+    const [draw, setDraw] = useState(false) 
+
 
     const firstChars = str => {
         // return the first chars 
@@ -23,6 +26,11 @@ const ChatList = ({threads, selectThread}) => {
         let ft = ff.slice(0,2);
 
         return ft.join("")
+    }
+
+    const createThread = () => {
+        // show the create thread drawer 
+        setDraw(true)
     }
 
 
@@ -37,7 +45,7 @@ const ChatList = ({threads, selectThread}) => {
                 padding-bottom: 1rem;
             `}>
                 <Title level={3}>Threads</Title>
-                <Button type="text" icon={<PlusOutlined />}>New Thread</Button>
+                <Button type="text" icon={<PlusOutlined />} onClick={createThread}>New Thread</Button>
             </div>
 
             <List>
@@ -53,6 +61,12 @@ const ChatList = ({threads, selectThread}) => {
                     ))
                 }
             </List>
+
+            {/* New thread  */}
+            <NewThread 
+                show={draw}
+                close={() =>setDraw(false)}
+            />
         </div>
     )
 }
