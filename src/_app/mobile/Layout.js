@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
         position: 'absolute',
-        bottom: '10rem',
+        bottom: '0',
         zIndex: 10
     },
     search: {
