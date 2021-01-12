@@ -30,7 +30,7 @@ const ThreadInfo = ({members, show, close, threadName}) => {
                 aria-labelledby="member-list"
                 subheader={
                     <ListSubheader>
-                        <Title type="secondary" level={5}>MEMBERS</Title>
+                        <Title type="secondary" level={5}>MEMBERS ({members.length})</Title>
                     </ListSubheader>
                 }
             >
